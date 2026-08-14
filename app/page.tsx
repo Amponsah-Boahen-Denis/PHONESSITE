@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowRight, Cpu, Headphones, ShieldCheck, ShoppingBag, Sparkles, Star, Truck } from "lucide-react";
 import { BenefitBar, Button, CategoryCard, PageLayout, ProductGrid, SectionHeading } from "@/components/storefront";

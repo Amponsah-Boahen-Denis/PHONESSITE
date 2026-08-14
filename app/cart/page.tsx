@@ -38,7 +38,17 @@ export default function CartPage() {
             ) : (
               items.map(({ product, quantity, selectedColor, selectedStorage }) => (
                 <div key={`${product.id}-${selectedColor ?? "default"}-${selectedStorage ?? "default"}`} className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center">
-                  <img src={product.images[0]} alt={product.name} className="h-28 w-28 rounded-xl object-cover" />
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="h-28 w-28 rounded-xl object-cover"
+                    onError={(event) => {
+                      const target = event.currentTarget as HTMLImageElement;
+                      if (target.src !== "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80") {
+                        target.src = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80";
+                      }
+                    }}
+                  />
 
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-4">

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   ArrowRight,
   ChevronDown,
@@ -21,6 +21,30 @@ import {
 } from "lucide-react";
 import { useCart } from "@/components/cart-context";
 import { categories, formatCurrency, products, type Product } from "@/lib/products";
+
+const FALLBACK_DEVICE_IMAGE = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80";
+
+export function ProductImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  const [imageSrc, setImageSrc] = useState(src);
+
+  useEffect(() => {
+    setImageSrc(src);
+  }, [src]);
+
+  return (
+    <img
+      src={imageSrc}
+      alt={alt}
+      className={className}
+      loading="lazy"
+      onError={(event) => {
+        if (event.currentTarget.src !== FALLBACK_DEVICE_IMAGE) {
+          event.currentTarget.src = FALLBACK_DEVICE_IMAGE;
+        }
+      }}
+    />
+  );
+}
 
 export function RatingStars({ rating }: { rating: number }) {
   return (
@@ -294,7 +318,7 @@ export function CategoryCard({ category }: { category: { name: string; slug: str
   return (
     <Link href={`/category/${category.slug}`} className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
       <div className="overflow-hidden">
-        <img src={image} alt={category.name} className="h-52 w-full object-cover transition duration-300 group-hover:scale-105" />
+        <ProductImage src={image} alt={category.name} className="h-52 w-full object-cover transition duration-300 group-hover:scale-105" />
       </div>
       <div className="space-y-2 p-5">
         <div className="flex items-center justify-between">
@@ -315,7 +339,7 @@ export function ProductCard({ product }: { product: Product }) {
     <article className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
       <div className="relative overflow-hidden rounded-xl bg-zinc-100">
         <Link href={`/products/${product.id}`}>
-          <img src={product.images[0]} alt={product.name} className="h-52 w-full object-cover transition duration-300 group-hover:scale-105" />
+          <ProductImage src={product.images[0]} alt={product.name} className="h-52 w-full object-cover transition duration-300 group-hover:scale-105" />
         </Link>
         {product.badge && (
           <span className="absolute left-3 top-3 rounded-full bg-[#f3c85d] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-zinc-900">
@@ -503,7 +527,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
   return (
     <div className="space-y-4">
       <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100">
-        <img src={images[selectedIndex]} alt={name} className="h-[420px] w-full object-cover" />
+        <ProductImage src={images[selectedIndex]} alt={name} className="h-[420px] w-full object-cover" />
       </div>
       <div className="grid grid-cols-4 gap-3">
         {images.map((image, index) => (
@@ -513,7 +537,7 @@ export function ProductGallery({ images, name }: { images: string[]; name: strin
             onClick={() => setSelectedIndex(index)}
             className={`overflow-hidden rounded-xl border ${selectedIndex === index ? "border-[#f3c85d]" : "border-zinc-200"}`}
           >
-            <img src={image} alt={`${name} preview ${index + 1}`} className="h-20 w-full object-cover" />
+            <ProductImage src={image} alt={`${name} preview ${index + 1}`} className="h-20 w-full object-cover" />
           </button>
         ))}
       </div>
@@ -600,7 +624,9 @@ export function NewsletterForm() {
 export function PageLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
-      <Header />
+      <Suspense fallback={<header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 backdrop-blur-sm"><div className="mx-auto max-w-7xl px-4 py-4 lg:px-6"><div className="h-9 w-28 animate-pulse rounded-full bg-zinc-200" /></div></header>}>
+        <Header />
+      </Suspense>
       {children}
       <Footer />
     </div>

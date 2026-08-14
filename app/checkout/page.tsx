@@ -144,7 +144,17 @@ export default function CheckoutPage() {
             <div className="mt-5 space-y-4">
               {items.map(({ product, quantity }) => (
                 <div key={product.id} className="flex gap-3">
-                  <img src={product.images[0]} alt={product.name} className="h-16 w-16 rounded-lg object-cover" />
+                  <img
+                    src={product.images[0]}
+                    alt={product.name}
+                    className="h-16 w-16 rounded-lg object-cover"
+                    onError={(event) => {
+                      const target = event.currentTarget as HTMLImageElement;
+                      if (target.src !== "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80") {
+                        target.src = "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80";
+                      }
+                    }}
+                  />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-zinc-900">{product.name}</p>
                     <p className="text-xs text-zinc-500">Qty: {quantity}</p>
