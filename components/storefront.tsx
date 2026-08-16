@@ -307,13 +307,14 @@ export function BenefitBar() {
 }
 
 export function CategoryCard({ category }: { category: { name: string; slug: string; description: string; count: number } }) {
-  const image = {
+  const imageMap: Record<string, string> = {
     Laptops: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80",
     Smartphones: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=80",
     Tablets: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=900&q=80",
     Accessories: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=900&q=80",
     Smartwatches: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=900&q=80",
-  }[category.name];
+  };
+  const image = imageMap[category.name] || imageMap.Laptops;
 
   return (
     <Link href={`/category/${category.slug}`} className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
