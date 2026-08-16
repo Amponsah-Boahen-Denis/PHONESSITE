@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageLayout, ProductGrid, FilterSidebar, SectionHeading } from "@/components/storefront";
 import { formatCurrency, products } from "@/lib/products";
 
-export default function ShopPage() {
+function ShopPageContent() {
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get("search") ?? "";
   const [sortBy, setSortBy] = useState("featured");
@@ -77,5 +77,13 @@ export default function ShopPage() {
         </div>
       </main>
     </PageLayout>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<PageLayout><main className="mx-auto max-w-7xl px-4 py-10 lg:px-6"><div className="h-64 animate-pulse rounded-2xl bg-zinc-100" /></main></PageLayout>}>
+      <ShopPageContent />
+    </Suspense>
   );
 }
